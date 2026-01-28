@@ -7,17 +7,14 @@
     <script src="https://www.youtube.com/iframe_api"></script>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
         @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
 
-        /* ĐÃ SỬA: BACKGROUND TOÀN MÀN HÌNH 7 MÀU CHUYỂN ĐỘNG */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab, #ff0000, #ffcc00, #9900ff);
             background-size: 400% 400%;
             animation: gradient-move 15s ease infinite;
-            color: #fff;
-            font-family: 'Segoe UI', sans-serif; overflow: hidden;
+            color: #fff; font-family: 'Segoe UI', sans-serif; overflow: hidden;
             transition: background 1s ease;
         }
 
@@ -27,7 +24,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* VIỀN LED */
         body::before {
             content: ""; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             border: 6px solid transparent;
@@ -50,39 +46,22 @@
         .container { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; padding: 20px; position: relative; z-index: 10; }
 
         header { text-align: center; margin-bottom: 15px; flex-shrink: 0; }
-        
-        /* TITLE & SUBTITLE: ĐEN XÁM */
-        header h1 { 
-            font-size: 1.4rem; color: #333333; text-transform: uppercase; margin: 0; 
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.4); 
-        }
-        .author-text { 
-            font-weight: bold; font-size: 0.85rem; margin-top: 8px; color: #444444; 
-            text-shadow: 1px 1px 1px rgba(255,255,255,0.3);
-        }
+        header h1 { font-size: 1.4rem; color: #333333; text-transform: uppercase; margin: 0; text-shadow: 1px 1px 2px rgba(255,255,255,0.4); }
+        .author-text { font-weight: bold; font-size: 0.85rem; margin-top: 8px; color: #444444; text-shadow: 1px 1px 1px rgba(255,255,255,0.3); }
 
         #mainMenu { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: 80vh; }
-        
-        /* Ô SEARCH TRONG SUỐT TRÊN NỀN 7 MÀU */
         .search-group { 
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(15px);
-            padding: 20px; border-radius: 20px; 
-            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(15px);
+            padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3);
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
         }
 
         input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.4); color: #fff; margin-bottom: 15px; outline: none; }
-        input::placeholder { color: #ddd; }
         
         #actionBtn { 
             width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; 
             background: linear-gradient(90deg, #ff0000, #ff5555); color: #fff; text-transform: uppercase; 
-            box-shadow: 0 4px 15px rgba(255,0,0,0.3);
         }
-
-        .loading-text::after { content: ''; animation: dots-anim 1.5s infinite; }
-        @keyframes dots-anim { 0% { content: ''; } 33% { content: '.'; } 66% { content: '..'; } 100% { content: '...'; } }
 
         #results { width: 100%; margin-top: 15px; overflow-y: auto; flex-grow: 1; padding-right: 5px; }
         .video-item { display: flex; align-items: center; background: rgba(0,0,0,0.6); margin-bottom: 10px; padding: 10px; border-radius: 12px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
@@ -98,15 +77,28 @@
         .tag-video { background: #444; color: #ccc; }
 
         #mainWatch { display: none; width: 100%; flex-direction: column; align-items: center; }
-        .player-border { width: 100%; max-width: 800px; padding: 5px; background: linear-gradient(var(--angle), red, yellow, lime, cyan, blue, magenta, red); border-radius: 15px; animation: rotate-angle 8s linear infinite; }
-        .player-content { background: #000; border-radius: 10px; overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0; }
-        #videoFrame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        
+        /* KHUNG PLAYER CỐ ĐỊNH TỶ LỆ */
+        .player-border { 
+            width: 100%; max-width: 800px; padding: 5px; 
+            background: linear-gradient(var(--angle), red, yellow, lime, cyan, blue, magenta, red); 
+            border-radius: 15px; animation: rotate-angle 8s linear infinite; 
+        }
+        .player-content { 
+            background: #000; border-radius: 10px; overflow: hidden; 
+            position: relative; padding-bottom: 56.25%; /* Tỷ lệ 16:9 chuẩn YouTube */
+            height: 0; 
+        }
+        /* Iframe website sẽ tự động resize theo khung này */
+        #videoFrame, #externalFrame { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; 
+        }
 
         .progress-container { width: 100%; max-width: 800px; height: 22px; background: #222; border-radius: 15px; margin-top: 15px; overflow: hidden; position: relative; }
         #progressBar { height: 100%; width: 0%; background: lime; transition: width 0.5s linear; }
         #progressText { position: absolute; width: 100%; text-align: center; font-size: 0.75rem; font-weight: bold; top: 3px; color: #fff; }
         
-        #nowPlaying { margin-top: 15px; color: #fff; font-weight: bold; font-size: 0.95rem; text-align: center; text-shadow: 0 0 8px rgba(0,0,0,0.5); padding: 0 10px; }
+        #nowPlaying { margin-top: 15px; color: #fff; font-weight: bold; font-size: 0.95rem; text-align: center; padding: 0 10px; }
 
         .control-panel { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; width: 100%; max-width: 500px; margin-top: 15px; }
         .ctrl-btn { padding: 12px 5px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: #fff; font-size: 0.7rem; text-transform: uppercase; }
@@ -133,13 +125,15 @@
 
         <div id="mainWatch">
             <div class="player-border">
-                <div class="player-content"><div id="videoFrame"></div></div>
+                <div class="player-content" id="playerWrapper">
+                    <div id="videoFrame"></div>
+                </div>
             </div>
-            <div class="progress-container">
+            <div class="progress-container" id="pBox">
                 <div id="progressBar"></div>
                 <div id="progressText">0%</div>
             </div>
-            <div id="nowPlaying">🎧 ĐANG PHÁT : Đang chờ hệ thống...</div>
+            <div id="nowPlaying">🎧 ĐANG PHÁT : Đang tải...</div>
             <div class="control-panel">
                 <button class="ctrl-btn btn-stop" onclick="stopVideo()">🛑 STOP</button>
                 <button class="ctrl-btn btn-pause" id="playPauseBtn" onclick="togglePlay()">⏸️ TẠM DỪNG</button>
@@ -159,6 +153,7 @@
         const progressBar = document.getElementById('progressBar'), progressText = document.getElementById('progressText');
         const nowPlayingText = document.getElementById('nowPlaying'), changeBgBtn = document.getElementById('changeBgBtn');
 
+        // Hạt bay
         const canvas = document.getElementById('particleCanvas'), ctx = canvas.getContext('2d');
         let particlesArray = [];
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -182,75 +177,97 @@
         function changeBackground() {
             const bgUrl = `https://picsum.photos/1920/1080?random=${Math.floor(Math.random() * 1000)}`;
             document.body.style.backgroundImage = `url('${bgUrl}')`;
-            document.body.style.animation = "none"; // Tắt gradient khi đã đổi ảnh nền
+            document.body.style.animation = "none";
         }
 
         async function handleLogic() {
             const val = input.value.trim();
             if (!val) { alert("❌ BẠN CHƯA NHẬP GÌ MÀ 🙄"); return; }
-            actionBtn.classList.add('loading-text'); actionBtn.innerText = "🔍 ĐANG TÌM KIẾM";
-            if (val.includes('http')) {
-                let id = extractId(val);
-                setTimeout(async () => {
-                    await fetchTitle(id);
-                    actionBtn.classList.remove('loading-text');
-                    if(currentVideoTitle !== "Video") { alert(`✅ ĐÃ TÌM KIẾM THÀNH CÔNG : ${currentVideoTitle}`); playVideo(id); }
-                    else { alert("❌ TÌM KIẾM THẤT BẠI"); }
-                    actionBtn.innerText = "🔗 DÙNG LINK";
-                }, 1000);
-            } else { searchYT(val); }
+            const isLink = val.includes('http') || val.includes('www.');
+
+            if (isLink) {
+                try {
+                    let finalUrl = val.startsWith('http') ? val : 'https://' + val;
+                    new URL(finalUrl);
+                    alert("✅ LINK HOẠT ĐỘNG");
+                    openLinkDirectly(finalUrl);
+                } catch (e) {
+                    alert("❌ LINK BỊ LỖI HOẶC DO LINK ĐÃ BỊ XÓA");
+                }
+            } else {
+                searchYT(val);
+            }
         }
 
-        function extractId(u) { return u.includes('v=') ? u.split('v=')[1].split('&')[0] : u.split('youtu.be/')[1]?.split('?')[0] || u; }
+        function openLinkDirectly(link) {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('mainWatch').style.display = 'flex';
+            changeBgBtn.style.display = 'inline-block';
+            nowPlayingText.innerText = `🔗 ĐANG TRUY CẬP WEBSITE...`;
+            
+            const wrapper = document.getElementById('playerWrapper');
+            const ytId = extractYTId(link);
 
-        async function fetchTitle(id) {
-            try {
-                const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${id}&key=${API_KEY}`);
-                const data = await res.json();
-                currentVideoTitle = data.items[0]?.snippet.title || "Video";
-            } catch { currentVideoTitle = "Video"; }
+            if (ytId) {
+                wrapper.innerHTML = '<div id="videoFrame"></div>';
+                player = new YT.Player('videoFrame', {
+                    height: '100%', width: '100%', videoId: ytId,
+                    playerVars: { 'autoplay': 1, 'controls': 1 },
+                    events: { 'onStateChange': onPlayerStateChange }
+                });
+            } else {
+                // ĐÃ SỬA: Website tự động resize khít vào khung player 16:9
+                wrapper.innerHTML = `<iframe id="externalFrame" src="${link}" allowfullscreen allow="autoplay"></iframe>`;
+            }
         }
 
-        function getTags(title) {
-            let tags = [];
-            const lowTitle = title.toLowerCase();
-            if (lowTitle.includes('remix')) tags.push('<span class="tag tag-remix">Remix</span>');
-            if (lowTitle.includes('official mv') || lowTitle.includes('music video')) tags.push('<span class="tag tag-music">Official MV</span>');
-            if (lowTitle.includes('original')) tags.push('<span class="tag tag-music">Original</span>');
-            if (lowTitle.includes('lyrics')) tags.push('<span class="tag tag-lyrics">Lyrics</span>');
-            if (tags.length === 0) tags.push('<span class="tag tag-video">VIDEO</span>');
-            return tags.join('');
+        function extractYTId(u) {
+            if (u.includes('v=')) return u.split('v=')[1].split('&')[0];
+            if (u.includes('youtu.be/')) return u.split('youtu.be/')[1].split('?')[0];
+            return null;
         }
 
         async function searchYT(q) {
+            actionBtn.innerText = "🔍 ĐANG TÌM...";
             try {
                 const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&q=${q}&type=video&key=${API_KEY}`);
                 const data = await res.json();
-                setTimeout(() => {
-                    actionBtn.classList.remove('loading-text'); resultsBox.innerHTML = "";
-                    if(data.items && data.items.length > 0) {
-                        alert(`✅ ĐÃ TÌM KIẾM THÀNH CÔNG : ${data.items[0].snippet.title}`);
-                        data.items.forEach(item => {
-                            const title = item.snippet.title;
-                            const div = document.createElement('div');
-                            div.className = 'video-item';
-                            div.onclick = () => { currentVideoTitle = title; playVideo(item.id.videoId); };
-                            div.innerHTML = `<img src="${item.snippet.thumbnails.medium.url}"><div class="video-info"><p class="video-title">${title}</p><div class="tag-container">${getTags(title)}</div></div>`;
-                            resultsBox.appendChild(div);
-                        });
-                    } else { alert("❌ TÌM KIẾM THẤT BẠI"); }
-                    actionBtn.innerText = "🔍 TÌM KIẾM";
-                }, 1500);
-            } catch { actionBtn.classList.remove('loading-text'); alert("❌ LỖI HỆ THỐNG"); }
+                actionBtn.innerText = "📝 GỬI ĐẾN HỆ THỐNG";
+                resultsBox.innerHTML = "";
+                if(data.items && data.items.length > 0) {
+                    alert(`✅ ĐÃ TÌM KIẾM THÀNH CÔNG : ${data.items[0].snippet.title}`);
+                    data.items.forEach(item => {
+                        const title = item.snippet.title;
+                        const div = document.createElement('div');
+                        div.className = 'video-item';
+                        div.onclick = () => { currentVideoTitle = title; playVideo(item.id.videoId); };
+                        div.innerHTML = `<img src="${item.snippet.thumbnails.medium.url}"><div class="video-info"><p class="video-title">${title}</p><div class="tag-container">${getTags(title)}</div></div>`;
+                        resultsBox.appendChild(div);
+                    });
+                } else { alert("❌ TÌM KIẾM THẤT BẠI"); }
+            } catch { alert("❌ LỖI KẾT NỐI"); actionBtn.innerText = "📝 GỬI ĐẾN HỆ THỐNG"; }
+        }
+
+        function getTags(title) {
+            let tags = []; const low = title.toLowerCase();
+            if (low.includes('remix')) tags.push('<span class="tag tag-remix">Remix</span>');
+            if (low.includes('official mv') || low.includes('music video')) tags.push('<span class="tag tag-music">Official MV</span>');
+            if (low.includes('lyrics')) tags.push('<span class="tag tag-lyrics">Lyrics</span>');
+            if (tags.length === 0) tags.push('<span class="tag tag-video">VIDEO</span>');
+            return tags.join('');
         }
 
         function playVideo(id) {
             document.getElementById('mainMenu').style.display = 'none';
             document.getElementById('mainWatch').style.display = 'flex';
-            changeBgBtn.style.display = 'inline-block'; 
+            changeBgBtn.style.display = 'inline-block';
             nowPlayingText.innerText = `🎧 ĐANG PHÁT : ${currentVideoTitle}`;
-            if (player) player.loadVideoById(id);
-            else player = new YT.Player('videoFrame', { height: '100%', width: '100%', videoId: id, playerVars: { 'autoplay': 1, 'controls': 1 }, events: { 'onStateChange': onPlayerStateChange } });
+            document.getElementById('playerWrapper').innerHTML = '<div id="videoFrame"></div>';
+            player = new YT.Player('videoFrame', {
+                height: '100%', width: '100%', videoId: id,
+                playerVars: { 'autoplay': 1, 'controls': 1 },
+                events: { 'onStateChange': onPlayerStateChange }
+            });
         }
 
         function onPlayerStateChange(e) {
@@ -264,22 +281,24 @@
                 if (player && player.getDuration) {
                     let per = Math.floor((player.getCurrentTime() / player.getDuration()) * 100) || 0;
                     progressBar.style.width = per + "%"; progressText.innerText = per + "%";
-                    progressBar.style.background = per < 50 ? "lime" : (per < 85 ? "yellow" : "red");
                 }
             }, 1000);
         }
 
-        function togglePlay() { player.getPlayerState() == 1 ? player.pauseVideo() : player.playVideo(); }
-        function stopVideo() { if (confirm(`❓ Dừng video ${currentVideoTitle}?`)) player.stopVideo(); }
+        function togglePlay() { 
+            if(player && player.getPlayerState) player.getPlayerState() == 1 ? player.pauseVideo() : player.playVideo(); 
+        }
+
+        function stopVideo() { if (confirm(`❓ Dừng xem?`)) goHome(); }
+
         function goHome() {
-            if (confirm("❓ VỀ TRANG CHỦ")) {
-                if (player) player.stopVideo();
-                document.getElementById('mainWatch').style.display = 'none';
-                document.getElementById('mainMenu').style.display = 'flex';
-                changeBgBtn.style.display = 'none'; 
-                document.body.style.backgroundImage = 'none';
-                document.body.style.animation = "gradient-move 15s ease infinite"; // Bật lại animation khi về trang chủ
-            }
+            document.getElementById('mainWatch').style.display = 'none';
+            document.getElementById('mainMenu').style.display = 'flex';
+            changeBgBtn.style.display = 'none'; 
+            document.body.style.backgroundImage = 'none';
+            document.body.style.animation = "gradient-move 15s ease infinite";
+            if(player && player.destroy) player.destroy();
+            document.getElementById('playerWrapper').innerHTML = "";
         }
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
     </script>
