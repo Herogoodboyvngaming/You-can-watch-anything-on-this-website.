@@ -181,7 +181,7 @@
                     await fetchTitle(id);
                     actionBtn.classList.remove('loading-text');
                     if(currentVideoTitle !== "Video") {
-                        alert(`✅ ĐÃ TÌM KIẾM THÀNH CÔNG : ${currentVideoTitle} NHÉ GEMINI`);
+                        alert(`✅ ĐÃ TÌM KIẾM THÀNH CÔNG : ${currentVideoTitle}`);
                         playVideo(id); 
                     } else { alert("❌ TÌM KIẾM THẤT BẠI"); }
                     actionBtn.innerText = "🔗 DÙNG LINK";
