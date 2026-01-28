@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Trang web xem gì cũng được</title>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #000; color: #fff;
+            font-family: 'Segoe UI', sans-serif; overflow: hidden;
+            transition: background 1s ease;
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+        }
+
+        /* VIỀN LED TOÀN MÀN HÌNH */
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            border: 6px solid transparent;
+            border-image: linear-gradient(var(--angle), red, yellow, lime, cyan, blue, magenta, red) 1;
+            z-index: 9999; pointer-events: none;
+            animation: rotate-angle 12s linear infinite;
+        }
+        @keyframes rotate-angle { to { --angle: 360deg; } }
+
+        /* CANVAS HẠT BAY */
+        #particleCanvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1;
+        }
+
+        /* NÚT ĐỔI BG */
+        #changeBgBtn {
+            margin-top: 15px; padding: 12px 20px; border-radius: 50px; 
+            border: 2px solid #00f2fe; background: rgba(0,0,0,0.8); 
+            color: #00f2fe; font-weight: bold; cursor: pointer; 
+            box-shadow: 0 0 15px #00f2fe; font-size: 0.8rem;
+            display: none; transition: 0.3s;
+        }
+
+        .container {
+            width: 100%; height: 100%; display: flex; flex-direction: column; 
+            align-items: center; padding: 20px; position: relative; z-index: 10;
+        }
+
+        header { text-align: center; margin-bottom: 15px; flex-shrink: 0; }
+        header h1 { font-size: 1.4rem; color: #00f2fe; text-transform: uppercase; margin: 0; text-shadow: 0 0 10px #00f2fe; }
+        
+        .author-text { 
+            font-weight: bold; font-size: 0.85rem; margin-top: 8px;
+            color: #00f2fe; text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
+        }
+
+        #mainMenu { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: 80vh; }
+        .search-group { background: rgba(0,0,0,0.6); padding: 20px; border-radius: 20px; border: 1px solid #333; }
+        input { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid #333; background: #111; color: #fff; margin-bottom: 15px; outline: none; }
+        
+        #actionBtn { 
+            width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; 
+            background: linear-gradient(90deg, #ff0000, #ff5555); color: #fff; text-transform: uppercase; 
+            min-height: 50px;
+        }
+
+        .loading-text::after { content: ''; animation: dots-anim 1.5s infinite; }
+        @keyframes dots-anim { 0% { content: ''; } 33% { content: '.'; } 66% { content: '..'; } 100% { content: '...'; } }
+
+        #results { width: 100%; margin-top: 15px; overflow-y: auto; flex-grow: 1; padding-right: 5px; }
+        .video-item { display: flex; align-items: center; background: rgba(20,20,20,0.9); margin-bottom: 10px; padding: 10px; border-radius: 12px; cursor: pointer; border: 1px solid #333; }
+        .video-item img { width: 90px; border-radius: 8px; margin-right: 12px; }
+
+        #mainWatch { display: none; width: 100%; flex-direction: column; align-items: center; }
+        .player-border { width: 100%; max-width: 800px; padding: 5px; background: linear-gradient(var(--angle), red, yellow, lime, cyan, blue, magenta, red); border-radius: 15px; animation: rotate-angle 8s linear infinite; }
+        .player-content { background: #000; border-radius: 10px; overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0; }
+        #videoFrame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+        .progress-container { width: 100%; max-width: 800px; height: 22px; background: #222; border-radius: 15px; margin-top: 15px; overflow: hidden; position: relative; }
+        #progressBar { height: 100%; width: 0%; background: lime; transition: width 0.5s linear; }
+        #progressText { position: absolute; width: 100%; text-align: center; font-size: 0.75rem; font-weight: bold; top: 3px; color: #fff; }
+        
+        #nowPlaying { margin-top: 15px; color: #fff; font-weight: bold; font-size: 0.95rem; text-align: center; text-shadow: 0 0 8px #00f2fe; padding: 0 10px; }
+
+        .control-panel { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; width: 100%; max-width: 500px; margin-top: 15px; }
+        .ctrl-btn { padding: 12px 5px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: #fff; font-size: 0.7rem; text-transform: uppercase; }
+        .btn-stop { background: #ff0000; } .btn-pause { background: #ffaa00; } .btn-home { background: #00f2fe; color: #000; }
+
+        footer { margin-top: auto; padding: 10px; text-align: center; font-size: 0.65rem; color: #888; }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="container">
+        <header>
+            <h1>Trang web xem gì cũng được</h1>
+            <p class="author-text">ĐƯỢC CODE BỞI : Nguyễn Chí Dự 🇻🇳❤️🇻🇳</p>
+        </header>
+
+        <div id="mainMenu">
+            <div class="search-group">
+                <input type="text" id="userInput" placeholder="Nhập tên video hoặc dán link...">
+                <button id="actionBtn" onclick="handleLogic()">📝 GỬI ĐẾN HỆ THỐNG</button>
+            </div>
+            <div id="results"></div>
+        </div>
+
+        <div id="mainWatch">
+            <div class="player-border">
+                <div class="player-content"><div id="videoFrame"></div></div>
+            </div>
+            <div class="progress-container">
+                <div id="progressBar"></div>
+                <div id="progressText">0%</div>
+            </div>
+            <div id="nowPlaying">🎧 ĐANG PHÁT : Đang chờ hệ thống...</div>
+            <div class="control-panel">
+                <button class="ctrl-btn btn-stop" onclick="stopVideo()">🛑 STOP</button>
+                <button class="ctrl-btn btn-pause" id="playPauseBtn" onclick="togglePlay()">⏸️ TẠM DỪNG</button>
+                <button class="ctrl-btn btn-home" onclick="goHome()">🏠 TRANG CHỦ</button>
+            </div>
+            <button id="changeBgBtn" onclick="changeBackground()">🔄 THAY ĐỔI BACKGROUND</button>
+        </div>
+
+        <footer>Made in VN 🇻🇳 | © BẢN QUYỀN WEBSITE THUỘC VỀ NGUYỄN CHÍ DỰ</footer>
+    </div>
+
+    <script>
+        const API_KEY = 'AIzaSyAUjIhkSjpJ91X9Ua3ZTduij-mtArkcYas';
+        let player, progressInterval, currentVideoTitle = "";
+        
+        const input = document.getElementById('userInput'), actionBtn = document.getElementById('actionBtn');
+        const resultsBox = document.getElementById('results'), playPauseBtn = document.getElementById('playPauseBtn');
+        const progressBar = document.getElementById('progressBar'), progressText = document.getElementById('progressText');
+        const nowPlayingText = document.getElementById('nowPlaying'), changeBgBtn = document.getElementById('changeBgBtn');
+
+        // HỆ THỐNG HẠT
+        const canvas = document.getElementById('particleCanvas'), ctx = canvas.getContext('2d');
+        let particlesArray = [];
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+                this.color = 'rgba(0, 242, 254, 0.4)';
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+                if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+            }
+            draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
+        }
+        function init() { for (let i = 0; i < 70; i++) particlesArray.push(new Particle()); }
+        function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particlesArray.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
+        init(); animate();
+
+        function changeBackground() {
+            const bgUrl = `https://picsum.photos/1920/1080?random=${Math.floor(Math.random() * 1000)}`;
+            document.body.style.backgroundImage = `url('${bgUrl}')`;
+        }
+
+        // XỬ LÝ LOGIC CHÍNH
+        async function handleLogic() {
+            const val = input.value.trim();
+            if (!val) { alert("❌ BẠN CHƯA NHẬP GÌ MÀ 🙄"); return; }
+            actionBtn.classList.add('loading-text');
+            actionBtn.innerText = "🔍 ĐANG TÌM KIẾM";
+
+            if (val.includes('http')) {
+                let id = extractId(val);
+                setTimeout(async () => {
+                    await fetchTitle(id);
+                    actionBtn.classList.remove('loading-text');
+                    if(currentVideoTitle !== "Video") {
+                        alert(`✅ ĐÃ TÌM KIẾM THÀNH CÔNG : ${currentVideoTitle} NHÉ GEMINI`);
+                        playVideo(id); 
+                    } else { alert("❌ TÌM KIẾM THẤT BẠI"); }
+                    actionBtn.innerText = "🔗 DÙNG LINK";
+                }, 1000);
+            } else { searchYT(val); }
+        }
+
+        function extractId(u) { return u.includes('v=') ? u.split('v=')[1].split('&')[0] : u.split('youtu.be/')[1]?.split('?')[0] || u; }
+
+        async function fetchTitle(id) {
+            try {
+                const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${id}&key=${API_KEY}`);
+                const data = await res.json();
+                currentVideoTitle = data.items[0]?.snippet.title || "Video";
+            } catch { currentVideoTitle = "Video"; }
+        }
+
+        async function searchYT(q) {
+            try {
+                const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&q=${q}&type=video&key=${API_KEY}`);
+                const data = await res.json();
+                setTimeout(() => {
+                    actionBtn.classList.remove('loading-text');
+                    resultsBox.innerHTML = "";
+                    if(data.items && data.items.length > 0) {
+                        alert(`✅ ĐÃ TÌM KIẾM THÀNH CÔNG : ${data.items[0].snippet.title} NHÉ GEMINI`);
+                        data.items.forEach(item => {
+                            const div = document.createElement('div');
+                            div.className = 'video-item';
+                            div.onclick = () => { currentVideoTitle = item.snippet.title; playVideo(item.id.videoId); };
+                            div.innerHTML = `<img src="${item.snippet.thumbnails.medium.url}"><p>${item.snippet.title}</p>`;
+                            resultsBox.appendChild(div);
+                        });
+                    } else { alert("❌ TÌM KIẾM THẤT BẠI"); }
+                    actionBtn.innerText = "🔍 TÌM KIẾM";
+                }, 1500);
+            } catch { 
+                actionBtn.classList.remove('loading-text');
+                alert("❌ LỖI HỆ THỐNG");
+                actionBtn.innerText = "🔍 TÌM KIẾM";
+            }
+        }
+
+        function playVideo(id) {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('mainWatch').style.display = 'flex';
+            changeBgBtn.style.display = 'inline-block'; 
+            nowPlayingText.innerText = `🎧 ĐANG PHÁT : ${currentVideoTitle}`;
+            if (player) { player.loadVideoById(id); }
+            else {
+                player = new YT.Player('videoFrame', {
+                    height: '100%', width: '100%', videoId: id,
+                    playerVars: { 'autoplay': 1, 'controls': 1 },
+                    events: { 'onStateChange': onPlayerStateChange }
+                });
+            }
+        }
+
+        function onPlayerStateChange(e) {
+            if (e.data == YT.PlayerState.PLAYING) { playPauseBtn.innerHTML = "⏸️ TẠM DỪNG"; startProgress(); }
+            else { playPauseBtn.innerHTML = "▶️ PHÁT"; clearInterval(progressInterval); }
+        }
+
+        function startProgress() {
+            clearInterval(progressInterval);
+            progressInterval = setInterval(() => {
+                if (player && player.getDuration) {
+                    let per = Math.floor((player.getCurrentTime() / player.getDuration()) * 100) || 0;
+                    progressBar.style.width = per + "%";
+                    progressText.innerText = per + "%";
+                    progressBar.style.background = per < 50 ? "lime" : (per < 85 ? "yellow" : "red");
+                }
+            }, 1000);
+        }
+
+        function togglePlay() { player.getPlayerState() == 1 ? player.pauseVideo() : player.playVideo(); }
+        function stopVideo() { if (confirm(`❓ Dừng video ${currentVideoTitle}?`)) player.stopVideo(); }
+        function goHome() {
+            if (confirm("❓ VỀ TRANG CHỦ")) {
+                if (player) player.stopVideo();
+                document.getElementById('mainWatch').style.display = 'none';
+                document.getElementById('mainMenu').style.display = 'flex';
+                changeBgBtn.style.display = 'none';
+                document.body.style.backgroundImage = 'none';
+                document.body.style.backgroundColor = '#000';
+            }
+        }
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+    </script>
+</body>
+  </html>
+
