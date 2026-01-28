@@ -10,12 +10,21 @@
         
         @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
 
+        /* ĐÃ SỬA: BACKGROUND TOÀN MÀN HÌNH 7 MÀU CHUYỂN ĐỘNG */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #000; color: #fff;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab, #ff0000, #ffcc00, #9900ff);
+            background-size: 400% 400%;
+            animation: gradient-move 15s ease infinite;
+            color: #fff;
             font-family: 'Segoe UI', sans-serif; overflow: hidden;
             transition: background 1s ease;
-            background-size: cover; background-position: center; background-repeat: no-repeat;
+        }
+
+        @keyframes gradient-move {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* VIỀN LED */
@@ -41,27 +50,42 @@
         .container { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; padding: 20px; position: relative; z-index: 10; }
 
         header { text-align: center; margin-bottom: 15px; flex-shrink: 0; }
-        header h1 { font-size: 1.4rem; color: #00f2fe; text-transform: uppercase; margin: 0; text-shadow: 0 0 10px #00f2fe; }
         
+        /* TITLE & SUBTITLE: ĐEN XÁM */
+        header h1 { 
+            font-size: 1.4rem; color: #333333; text-transform: uppercase; margin: 0; 
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.4); 
+        }
         .author-text { 
-            font-weight: bold; font-size: 0.85rem; margin-top: 8px;
-            color: #00f2fe; text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
+            font-weight: bold; font-size: 0.85rem; margin-top: 8px; color: #444444; 
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.3);
         }
 
         #mainMenu { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: 80vh; }
-        .search-group { background: rgba(0,0,0,0.6); padding: 20px; border-radius: 20px; border: 1px solid #333; }
-        input { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid #333; background: #111; color: #fff; margin-bottom: 15px; outline: none; }
+        
+        /* Ô SEARCH TRONG SUỐT TRÊN NỀN 7 MÀU */
+        .search-group { 
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            padding: 20px; border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.4); color: #fff; margin-bottom: 15px; outline: none; }
+        input::placeholder { color: #ddd; }
         
         #actionBtn { 
             width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; 
             background: linear-gradient(90deg, #ff0000, #ff5555); color: #fff; text-transform: uppercase; 
+            box-shadow: 0 4px 15px rgba(255,0,0,0.3);
         }
 
         .loading-text::after { content: ''; animation: dots-anim 1.5s infinite; }
         @keyframes dots-anim { 0% { content: ''; } 33% { content: '.'; } 66% { content: '..'; } 100% { content: '...'; } }
 
         #results { width: 100%; margin-top: 15px; overflow-y: auto; flex-grow: 1; padding-right: 5px; }
-        .video-item { display: flex; align-items: center; background: rgba(20,20,20,0.9); margin-bottom: 10px; padding: 10px; border-radius: 12px; cursor: pointer; border: 1px solid #333; }
+        .video-item { display: flex; align-items: center; background: rgba(0,0,0,0.6); margin-bottom: 10px; padding: 10px; border-radius: 12px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
         .video-item img { width: 90px; border-radius: 8px; margin-right: 12px; }
         
         .video-info { display: flex; flex-direction: column; gap: 5px; }
@@ -70,7 +94,7 @@
         .tag { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
         .tag-music { background: #ff0055; color: #fff; }
         .tag-remix { background: #aa00ff; color: #fff; }
-        .tag-lyrics { background: #00c3ff; color: #fff; } /* MÀU TAG LYRICS */
+        .tag-lyrics { background: #00c3ff; color: #fff; }
         .tag-video { background: #444; color: #ccc; }
 
         #mainWatch { display: none; width: 100%; flex-direction: column; align-items: center; }
@@ -82,13 +106,13 @@
         #progressBar { height: 100%; width: 0%; background: lime; transition: width 0.5s linear; }
         #progressText { position: absolute; width: 100%; text-align: center; font-size: 0.75rem; font-weight: bold; top: 3px; color: #fff; }
         
-        #nowPlaying { margin-top: 15px; color: #fff; font-weight: bold; font-size: 0.95rem; text-align: center; text-shadow: 0 0 8px #00f2fe; padding: 0 10px; }
+        #nowPlaying { margin-top: 15px; color: #fff; font-weight: bold; font-size: 0.95rem; text-align: center; text-shadow: 0 0 8px rgba(0,0,0,0.5); padding: 0 10px; }
 
         .control-panel { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; width: 100%; max-width: 500px; margin-top: 15px; }
         .ctrl-btn { padding: 12px 5px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: #fff; font-size: 0.7rem; text-transform: uppercase; }
         .btn-stop { background: #ff0000; } .btn-pause { background: #ffaa00; } .btn-home { background: #00f2fe; color: #000; }
 
-        footer { margin-top: auto; padding: 10px; text-align: center; font-size: 0.65rem; color: #888; }
+        footer { margin-top: auto; padding: 10px; text-align: center; font-size: 0.65rem; color: #333; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -135,7 +159,6 @@
         const progressBar = document.getElementById('progressBar'), progressText = document.getElementById('progressText');
         const nowPlayingText = document.getElementById('nowPlaying'), changeBgBtn = document.getElementById('changeBgBtn');
 
-        // CANVAS HẠT
         const canvas = document.getElementById('particleCanvas'), ctx = canvas.getContext('2d');
         let particlesArray = [];
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -143,7 +166,7 @@
             constructor() {
                 this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
                 this.size = Math.random() * 3 + 1; this.speedX = Math.random() * 1 - 0.5; this.speedY = Math.random() * 1 - 0.5;
-                this.color = 'rgba(0, 242, 254, 0.4)';
+                this.color = 'rgba(255, 255, 255, 0.4)';
             }
             update() {
                 this.x += this.speedX; this.y += this.speedY;
@@ -159,6 +182,7 @@
         function changeBackground() {
             const bgUrl = `https://picsum.photos/1920/1080?random=${Math.floor(Math.random() * 1000)}`;
             document.body.style.backgroundImage = `url('${bgUrl}')`;
+            document.body.style.animation = "none"; // Tắt gradient khi đã đổi ảnh nền
         }
 
         async function handleLogic() {
@@ -187,15 +211,13 @@
             } catch { currentVideoTitle = "Video"; }
         }
 
-        // PHÂN LOẠI TAG CÓ THÊM LYRICS
         function getTags(title) {
             let tags = [];
             const lowTitle = title.toLowerCase();
             if (lowTitle.includes('remix')) tags.push('<span class="tag tag-remix">Remix</span>');
             if (lowTitle.includes('official mv') || lowTitle.includes('music video')) tags.push('<span class="tag tag-music">Official MV</span>');
             if (lowTitle.includes('original')) tags.push('<span class="tag tag-music">Original</span>');
-            if (lowTitle.includes('lyrics')) tags.push('<span class="tag tag-lyrics">Lyrics</span>'); // TAG LYRICS MỚI
-            
+            if (lowTitle.includes('lyrics')) tags.push('<span class="tag tag-lyrics">Lyrics</span>');
             if (tags.length === 0) tags.push('<span class="tag tag-video">VIDEO</span>');
             return tags.join('');
         }
@@ -254,7 +276,9 @@
                 if (player) player.stopVideo();
                 document.getElementById('mainWatch').style.display = 'none';
                 document.getElementById('mainMenu').style.display = 'flex';
-                changeBgBtn.style.display = 'none'; document.body.style.backgroundImage = 'none'; document.body.style.backgroundColor = '#000';
+                changeBgBtn.style.display = 'none'; 
+                document.body.style.backgroundImage = 'none';
+                document.body.style.animation = "gradient-move 15s ease infinite"; // Bật lại animation khi về trang chủ
             }
         }
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
