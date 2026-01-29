@@ -18,7 +18,6 @@
             position: relative;
         }
 
-        /* Canvas hạt bay */
         #particleCanvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 1;
@@ -131,9 +130,9 @@
     <script>
         const API_KEY = 'AIzaSyAUjIhkSjpJ91X9Ua3ZTduij-mtArkcYas';
         let player, progressInterval, currentTitle = "";
-        const tagsToFind = ["REMIX", "OFFICIAL", "MV", "OFFICIAL MV", "ORIGINAL", "LYRICS", "EDM", "VIDEO"];
+        // Đã thêm SHORTS vào danh sách tags
+        const tagsToFind = ["REMIX", "OFFICIAL", "MV", "OFFICIAL MV", "ORIGINAL", "LYRICS", "EDM", "VIDEO", "SHORTS"];
 
-        // --- Hiệu ứng hạt bay ---
         const canvas = document.getElementById('particleCanvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
