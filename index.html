@@ -18,6 +18,9 @@
             overflow: hidden; position: relative; transition: background 0.5s ease;
         }
 
+        /* HIỆU ỨNG BẤM NÚT CHO TẤT CẢ CÁC BUTTON */
+        button:active { transform: scale(0.92); transition: 0.1s; }
+
         @media (min-width: 1025px) {
             header h1 { font-size: 2.2rem !important; }
             #mainMenu, #mainWatch { max-width: 900px !important; }
@@ -57,32 +60,31 @@
         #results { width: 100%; overflow-y: auto; flex-grow: 1; background: rgba(0, 0, 0, 0.4); border-radius: 15px; padding: 8px; border: 1px solid rgba(255,255,255,0.1); }
         .video-item { display: flex; align-items: center; background: rgba(255, 255, 255, 0.95); margin-bottom: 8px; padding: 8px; border-radius: 10px; cursor: pointer; }
         .video-title { color: #000; font-size: 0.8rem; margin: 0; font-weight: bold; }
-        .video-tag { font-size: 0.6rem; background: #ff0000; color: #fff; padding: 2px 5px; border-radius: 3px; font-weight: bold; margin-top: 4px; display: inline-block; }
+        
+        .video-tag { font-size: 0.6rem; background: #ff0000; color: #fff; padding: 2px 6px; border-radius: 3px; font-weight: bold; margin-top: 4px; display: inline-block; margin-right: 4px; }
+        .tag-priority { background: #000 !important; }
 
         #mainWatch { display: none; width: 100%; flex-direction: column; align-items: center; }
         .player-border { width: 100%; max-width: 800px; padding: 4px; background: linear-gradient(var(--angle), red, cyan, magenta, red); border-radius: 15px; animation: rotate-angle 5s linear infinite; }
         .player-content { background: #000; border-radius: 12px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
         #videoFrame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-        /* THANH PROGRESS */
+        /* THANH PROGRESS VÀNG KHÈ 50% ĐỎ LỊM 75% */
         .progress-container { width: 100%; max-width: 800px; height: 22px; background: #111; border-radius: 10px; margin-top: 15px; position: relative; overflow: hidden; }
         #progressBar { height: 100%; width: 0%; transition: width 0.5s linear, background-color 0.3s ease; }
         #progressText { position: absolute; width: 100%; text-align: center; font-size: 0.75rem; font-weight: bold; top: 3px; color: #fff; z-index: 5; }
         
         .control-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; max-width: 500px; margin-top: 15px; }
         .ctrl-btn { padding: 12px 5px; border: none; border-radius: 10px; font-weight: bold; color: #fff; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
-        
-        /* NÚT STOP ĐỎ HOÀN TOÀN */
         .btn-stop { background: #ff0000 !important; } 
         .btn-pause { background: #ffa502; } 
         .btn-home { background: #2ed573; color: #000; } 
         .btn-bg { background: #1e90ff; }
+        .btn-dl { background: #8e44ad; grid-column: span 2; }
 
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 400px; background: #fff; color: #000; padding: 20px; border-radius: 20px; z-index: 100000; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
         #modalOverlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index: 99999; }
         .modal-title { font-weight: bold; font-size: 1.1rem; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 10px; color: #5352ed; text-align: center; }
-        .form-label { color: #333; font-size: 0.75rem; font-weight: bold; margin-bottom: 5px; display: block; }
-        .modal input, .modal textarea { background: #f0f2f5; color: #000; border: 1px solid #ddd; }
         .btn-submit { width: 100%; background: #ff4757; color: #fff; border: none; padding: 12px; border-radius: 10px; margin-top: 5px; font-weight: bold; cursor: pointer; }
 
         footer { margin-top: auto; padding: 10px; text-align: center; font-size: 0.6rem; color: #111; font-weight: bold; }
@@ -97,12 +99,12 @@
     <div id="infoModal" class="modal">
         <div class="modal-title">ℹ️ THÔNG TIN & UPDATE</div>
         <div style="font-size: 0.8rem; line-height: 1.6; max-height: 200px; overflow-y: auto;">
-            <b>Phiên bản: 2.3.0</b><br>
+            <b>Phiên bản: 3.0.0</b><br>
             <i>Ngày: 04/02/2026</i><br><br>
-            1. + Cập nhật màu Progress Đỏ khi > 75%.<br>
-            2. + Nút STOP màu đỏ hoàn toàn.<br>
-            3. + Form Report Bug mặc định tại Footer.<br>
-            4. + Giữ nguyên Title đen và thông báo mặc định.<br>
+            1. + Hiệu ứng co giãn khi bấm nút.<br>
+            2. + Thêm tag VIDEO MUSIC.<br>
+            3. + DOWNLOAD MP3 xác nhận rời trang.<br>
+            4. + Progress: 50% vàng khè, 75% đỏ lịm.<br>
             ======================<br>
             <i>Code by: Nguyễn Chí Dự 🇻🇳</i>
         </div>
@@ -112,12 +114,12 @@
     <div id="bugModal" class="modal">
         <div class="modal-title">🐞 BÁO CÁO LỖI HỆ THỐNG</div>
         <form id="bugForm" onsubmit="sendBug(event)">
-            <label class="form-label">TÊN CỦA BẠN? (BẮT BUỘC)</label>
+            <p style="font-size: 0.75rem; font-weight: bold; margin-bottom: 5px;">TÊN CỦA BẠN? (BẮT BUỘC)</p>
             <input type="text" id="bugName" required placeholder="Nhập tên của bạn...">
-            <label class="form-label">GMAIL CỦA BẠN? (BẮT BUỘC)</label>
+            <p style="font-size: 0.75rem; font-weight: bold; margin-bottom: 5px;">GMAIL CỦA BẠN? (BẮT BUỘC)</p>
             <input type="email" id="bugEmail" required placeholder="Nhập Gmail của bạn...">
-            <label class="form-label">TIN NHẮN YÊU CẦU SỬA LỖI CỦA BẠN? (BẮT BUỘC)</label>
-            <textarea id="bugMsg" required placeholder="Mô tả lỗi gặp phải..."></textarea>
+            <p style="font-size: 0.75rem; font-weight: bold; margin-bottom: 5px;">TIN NHẮN YÊU CẦU SỬA LỖI CỦA BẠN? (BẮT BUỘC)</p>
+            <textarea id="bugMsg" required placeholder="Mô tả lỗi..."></textarea>
             <button type="submit" class="btn-submit">GỬI YÊU CẦU 🚀</button>
         </form>
     </div>
@@ -154,6 +156,7 @@
                 <button class="ctrl-btn btn-pause" id="playPauseBtn" onclick="togglePlay()">⏸️ TẠM DỪNG</button>
                 <button class="ctrl-btn btn-bg" onclick="changeBgPhoto()">🖼️ ĐỔI NỀN ẢNH</button>
                 <button class="ctrl-btn btn-home" onclick="confirmHome()">🏠 TRANG CHỦ</button>
+                <button class="ctrl-btn btn-dl" onclick="handleDownload()">📥 DOWNLOAD MP3</button>
             </div>
         </div>
         
@@ -166,8 +169,14 @@
 
     <script>
         const API_KEY = 'AIzaSyAUjIhkSjpJ91X9Ua3ZTduij-mtArkcYas';
-        let player, progressInterval, currentTitle = "";
-        const tagsToFind = ["REMIX", "OFFICIAL", "MV", "EDM", "COVER", "LOFI"];
+        let player, progressInterval, currentTitle = "", currentVidId = "";
+        
+        // THÊM TAG VIDEO MUSIC VÀO DANH SÁCH
+        const tagsToFind = [
+            "OFFICIAL MV", "OFFICIAL MUSIC VIDEO", "OFFICIAL VIDEO", "VIDEO OFFICIAL", 
+            "VIDEO MUSIC", "HOT TIK TOK", "NHẠC TRẺ", "BOLERO", "REMIX", "NONSTOP", 
+            "VINAHOUSE", "DJ", "EDM", "PARODY", "COVER", "LOFI", "STEP"
+        ];
         const badWords = ["sex", "porn", "phim 18", "đồi trụy"];
 
         const canvas = document.getElementById('particleCanvas');
@@ -223,12 +232,12 @@
             const val = document.getElementById('userInput').value.trim();
             if (!val) { alert("❌ BẠN CHƯA NHẬP GÌ MÀ 🙄"); return; }
             if (badWords.some(w => val.toLowerCase().includes(w))) {
-                if(confirm(" ⚠️ CẢNH BÁO : BẠN XÁC NHẬN MUỐN XEM PHIM 18+ ?")) { alert("❌ HỆ THỐNG KHÔNG HỖ TRỢ NỘI DUNG NÀY!"); return; } else return;
+                if(confirm(" ⚠️ CẢNH BÁO : BẠN XÁC NHẬN MUỐN XEM NỘI DUNG NHẠY CẢM?")) { alert("❌ HỆ THỐNG KHÔNG HỖ TRỢ NỘI DUNG NÀY!"); return; } else return;
             }
             if (val.includes('http')) {
                 const id = extractId(val);
                 if (id) { alert("✅ XÁC THỰC LINK THÀNH CÔNG"); playVideo(id); }
-                else alert(" ❌ TÌM KIẾM THẤT BẠI, HOẶC DO TÊN SAI HOẶC BÀI HÁT KHÔNG TỒN TẠI");
+                else alert(" ❌ TÌM KIẾM THẤT BẠI");
             } else { searchYT(val); }
         }
 
@@ -236,8 +245,7 @@
             const btn = document.getElementById('actionBtn'); btn.innerText = "🔍 ĐANG TÌM...";
             try {
                 const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=40&q=${q}&type=video&key=${API_KEY}`);
-                if (res.status === 403) { alert(" ⌛ BẠN ĐÃ SỬ DỤNG HẾT LƯỢT TÌM KIẾM CHO HÔM NAY VUI LÒNG ĐỢI QUA NGÀY TIẾP THEO ĐỂ HỆ THỐNG RESET, TRONG THỜI GIAN CHỜ BẠN CÓ THỂ DÙNG LINK"); btn.innerText = "🔍 TÌM KIẾM"; return; }
-                if (res.status === 400) { alert(" ❌ LỖI API KEY, VUI LÒNG ĐỢI CHỦ WEBSITE UPDATE"); btn.innerText = "🔍 TÌM KIẾM"; return; }
+                if (res.status === 403) { alert(" ⌛ HẾT LƯỢT TÌM KIẾM HÔM NAY"); btn.innerText = "🔍 TÌM KIẾM"; return; }
                 const data = await res.json(); btn.innerText = "🔍 TÌM KIẾM";
                 const resBox = document.getElementById('results'); resBox.innerHTML = "";
                 if(data.items && data.items.length > 0) {
@@ -245,20 +253,37 @@
                     data.items.forEach((item) => {
                         const div = document.createElement('div'); div.className = 'video-item';
                         div.onclick = () => { currentTitle = item.snippet.title; playVideo(item.id.videoId); };
-                        div.innerHTML = `<img src="${item.snippet.thumbnails.default.url}" style="width:60px;height:45px;border-radius:5px;margin-right:10px;object-fit:cover;"><div style="flex:1;"><p class="video-title">${item.snippet.title}</p>${getTags(item.snippet.title)}</div>`;
+                        div.innerHTML = `<img src="${item.snippet.thumbnails.default.url}" style="width:60px;height:45px;border-radius:5px;margin-right:10px;object-fit:cover;"><div style="flex:1;"><p class="video-title">${item.snippet.title}</p>${getTags(item.snippet.title, q)}</div>`;
                         resBox.appendChild(div);
                     });
-                } else { alert(" ❌ TÌM KIẾM THẤT BẠI, HOẶC DO TÊN SAI HOẶC BÀI HÁT KHÔNG TỒN TẠI"); }
-            } catch { alert(" ❌ LỖI API KEY, VUI LÒNG ĐỢI CHỦ WEBSITE UPDATE"); btn.innerText = "🔍 TÌM KIẾM"; }
+                } else { alert(" ❌ KHÔNG TÌM THẤY KẾT QUẢ"); }
+            } catch { alert(" ❌ LỖI HỆ THỐNG"); btn.innerText = "🔍 TÌM KIẾM"; }
         }
 
-        function getTags(t) {
-            let h = ""; const u = t.toUpperCase();
-            tagsToFind.forEach(tag => { if (u.includes(tag)) h += `<span class="video-tag">${tag}</span> `; });
+        function getTags(title, query) {
+            let h = ""; 
+            const uTitle = title.toUpperCase();
+            const uQuery = query.toLowerCase();
+            const hasRemix = uQuery.includes("remix");
+
+            if (!hasRemix) {
+                if (uTitle.includes("OFFICIAL MV")) h += `<span class="video-tag tag-priority">OFFICIAL MV</span> `;
+                if (uTitle.includes("OFFICIAL MUSIC VIDEO")) h += `<span class="video-tag tag-priority">OFFICIAL MUSIC VIDEO</span> `;
+                if (uTitle.includes("OFFICIAL VIDEO")) h += `<span class="video-tag tag-priority">OFFICIAL VIDEO</span> `;
+                if (uTitle.includes("VIDEO OFFICIAL")) h += `<span class="video-tag tag-priority">VIDEO OFFICIAL</span> `;
+                if (uTitle.includes("VIDEO MUSIC")) h += `<span class="video-tag tag-priority">VIDEO MUSIC</span> `;
+            }
+
+            tagsToFind.forEach(tag => { 
+                if (!h.includes(tag) && uTitle.includes(tag)) {
+                    h += `<span class="video-tag">${tag}</span> `;
+                }
+            });
             return h;
         }
 
         function playVideo(id) {
+            currentVidId = id;
             document.getElementById('mainMenu').style.display = 'none'; document.getElementById('mainWatch').style.display = 'flex';
             document.getElementById('playerWrapper').innerHTML = '<div id="videoFrame"></div>';
             player = new YT.Player('videoFrame', { videoId: id, playerVars: {'autoplay': 1, 'controls': 1}, events: { 'onStateChange': onStateChange, 'onReady': () => { document.getElementById('nowPlaying').innerText = "🎧 ĐANG PHÁT: " + currentTitle; }} });
@@ -268,23 +293,26 @@
             clearInterval(progressInterval);
             progressInterval = setInterval(() => {
                 if (player && player.getDuration) {
-                    let cur = player.getCurrentTime();
-                    let dur = player.getDuration();
-                    let per = Math.floor((cur / dur) * 100) || 0;
+                    let per = Math.floor((player.getCurrentTime() / player.getDuration()) * 100) || 0;
                     const bar = document.getElementById('progressBar'); 
                     bar.style.width = per + "%"; 
                     document.getElementById('progressText').innerText = per + "%";
                     
-                    // Sửa logic màu theo yêu cầu ông Dự
-                    if (per < 55) {
-                        bar.style.backgroundColor = "#2ed573"; // Xanh
+                    if (per < 50) {
+                        bar.style.backgroundColor = "#2ed573";
                     } else if (per < 75) {
-                        bar.style.backgroundColor = "#ffa502"; // Vàng
+                        bar.style.backgroundColor = "#ffff00"; // VÀNG KHÈ
                     } else {
-                        bar.style.backgroundColor = "#ff0000"; // Đỏ hoàn toàn từ 75%
+                        bar.style.backgroundColor = "#ff0000"; // ĐỎ LỊM
                     }
                 }
             }, 1000);
+        }
+
+        function handleDownload() {
+            if(confirm("❓ BẠN CÓ MUỐN RỜI TRANG WEB NÀY ĐỂ TẢI MP3?")) {
+                window.open(`https://www.youtubepp.com/watch?v=${currentVidId}`, '_blank');
+            }
         }
 
         function onStateChange(e) { if (e.data == YT.PlayerState.PLAYING) updateProgress(); else clearInterval(progressInterval); }
