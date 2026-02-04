@@ -18,7 +18,7 @@
             overflow: hidden; position: relative; transition: background 0.5s ease;
         }
 
-        /* HIỆU ỨNG BẤM NÚT CHO TẤT CẢ CÁC BUTTON */
+        /* HIỆU ỨNG BẤM NÚT CỦA ÔNG DỰ */
         button:active { transform: scale(0.92); transition: 0.1s; }
 
         @media (min-width: 1025px) {
@@ -55,7 +55,6 @@
         #actionBtn { background: linear-gradient(90deg, #ff0000, #ff5555); animation: pulse-btn 2s infinite; grid-column: span 2; margin-bottom: 5px; }
         .btn-info { background: #5352ed; }
         .btn-admin { background: #222; }
-        @keyframes pulse-btn { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
 
         #results { width: 100%; overflow-y: auto; flex-grow: 1; background: rgba(0, 0, 0, 0.4); border-radius: 15px; padding: 8px; border: 1px solid rgba(255,255,255,0.1); }
         .video-item { display: flex; align-items: center; background: rgba(255, 255, 255, 0.95); margin-bottom: 8px; padding: 8px; border-radius: 10px; cursor: pointer; }
@@ -69,7 +68,7 @@
         .player-content { background: #000; border-radius: 12px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
         #videoFrame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-        /* THANH PROGRESS VÀNG KHÈ 50% ĐỎ LỊM 75% */
+        /* THANH PROGRESS 50% VÀNG - 75% ĐỎ */
         .progress-container { width: 100%; max-width: 800px; height: 22px; background: #111; border-radius: 10px; margin-top: 15px; position: relative; overflow: hidden; }
         #progressBar { height: 100%; width: 0%; transition: width 0.5s linear, background-color 0.3s ease; }
         #progressText { position: absolute; width: 100%; text-align: center; font-size: 0.75rem; font-weight: bold; top: 3px; color: #fff; z-index: 5; }
@@ -80,7 +79,6 @@
         .btn-pause { background: #ffa502; } 
         .btn-home { background: #2ed573; color: #000; } 
         .btn-bg { background: #1e90ff; }
-        .btn-dl { background: #8e44ad; grid-column: span 2; }
 
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 400px; background: #fff; color: #000; padding: 20px; border-radius: 20px; z-index: 100000; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
         #modalOverlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index: 99999; }
@@ -99,12 +97,11 @@
     <div id="infoModal" class="modal">
         <div class="modal-title">ℹ️ THÔNG TIN & UPDATE</div>
         <div style="font-size: 0.8rem; line-height: 1.6; max-height: 200px; overflow-y: auto;">
-            <b>Phiên bản: 3.0.0</b><br>
+            <b>Phiên bản: 3.7.0</b><br>
             <i>Ngày: 04/02/2026</i><br><br>
-            1. + Hiệu ứng co giãn khi bấm nút.<br>
-            2. + Thêm tag VIDEO MUSIC.<br>
-            3. + DOWNLOAD MP3 xác nhận rời trang.<br>
-            4. + Progress: 50% vàng khè, 75% đỏ lịm.<br>
+            1. + Đã gỡ bỏ tính năng Download MP3.<br>
+            2. + Tối ưu hóa giao diện xem video.<br>
+            3. + Giữ nguyên mọi hiệu ứng hệ thống.<br>
             ======================<br>
             <i>Code by: Nguyễn Chí Dự 🇻🇳</i>
         </div>
@@ -156,7 +153,6 @@
                 <button class="ctrl-btn btn-pause" id="playPauseBtn" onclick="togglePlay()">⏸️ TẠM DỪNG</button>
                 <button class="ctrl-btn btn-bg" onclick="changeBgPhoto()">🖼️ ĐỔI NỀN ẢNH</button>
                 <button class="ctrl-btn btn-home" onclick="confirmHome()">🏠 TRANG CHỦ</button>
-                <button class="ctrl-btn btn-dl" onclick="handleDownload()">📥 DOWNLOAD MP3</button>
             </div>
         </div>
         
@@ -170,24 +166,17 @@
     <script>
         const API_KEY = 'AIzaSyAUjIhkSjpJ91X9Ua3ZTduij-mtArkcYas';
         let player, progressInterval, currentTitle = "", currentVidId = "";
-        
-        // THÊM TAG VIDEO MUSIC VÀO DANH SÁCH
-        const tagsToFind = [
-            "OFFICIAL MV", "OFFICIAL MUSIC VIDEO", "OFFICIAL VIDEO", "VIDEO OFFICIAL", 
-            "VIDEO MUSIC", "HOT TIK TOK", "NHẠC TRẺ", "BOLERO", "REMIX", "NONSTOP", 
-            "VINAHOUSE", "DJ", "EDM", "PARODY", "COVER", "LOFI", "STEP"
-        ];
+        const tagsToFind = ["OFFICIAL MV", "OFFICIAL MUSIC VIDEO", "OFFICIAL VIDEO", "VIDEO OFFICIAL", "VIDEO MUSIC", "HOT TIK TOK", "NHẠC TRẺ", "BOLERO", "REMIX", "NONSTOP", "VINAHOUSE", "DJ", "EDM", "PARODY", "COVER", "LOFI", "STEP"];
         const badWords = ["sex", "porn", "phim 18", "đồi trụy"];
 
+        // HIỆU ỨNG HẠT BAY
         const canvas = document.getElementById('particleCanvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
         function initParticles() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
             particles = [];
-            for (let i = 0; i < 30; i++) {
-                particles.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2+1, speedX: Math.random()*0.4-0.2, speedY: Math.random()*0.4-0.2, opacity: Math.random()*0.3+0.1});
-            }
+            for (let i = 0; i < 30; i++) particles.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2+1, speedX: Math.random()*0.4-0.2, speedY: Math.random()*0.4-0.2, opacity: Math.random()*0.3+0.1});
         }
         function drawParticles() {
             ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle="white";
@@ -196,6 +185,7 @@
         }
         initParticles(); drawParticles();
 
+        // RIPPLE KHI CLICK
         function createRipple(e) {
             const ripple = document.createElement("div"); ripple.className = "ripple"; document.body.appendChild(ripple);
             ripple.style.left = `${e.clientX-25}px`; ripple.style.top = `${e.clientY-25}px`;
@@ -203,11 +193,7 @@
         }
 
         function showModal(id) { document.getElementById(id).style.display = 'block'; document.getElementById('modalOverlay').style.display = 'block'; }
-        function closeAllModals() { 
-            document.getElementById('infoModal').style.display = 'none'; 
-            document.getElementById('bugModal').style.display = 'none'; 
-            document.getElementById('modalOverlay').style.display = 'none'; 
-        }
+        function closeAllModals() { document.getElementById('infoModal').style.display = 'none'; document.getElementById('bugModal').style.display = 'none'; document.getElementById('modalOverlay').style.display = 'none'; }
 
         function sendBug(e) {
             e.preventDefault();
@@ -261,24 +247,10 @@
         }
 
         function getTags(title, query) {
-            let h = ""; 
-            const uTitle = title.toUpperCase();
-            const uQuery = query.toLowerCase();
-            const hasRemix = uQuery.includes("remix");
-
-            if (!hasRemix) {
-                if (uTitle.includes("OFFICIAL MV")) h += `<span class="video-tag tag-priority">OFFICIAL MV</span> `;
-                if (uTitle.includes("OFFICIAL MUSIC VIDEO")) h += `<span class="video-tag tag-priority">OFFICIAL MUSIC VIDEO</span> `;
-                if (uTitle.includes("OFFICIAL VIDEO")) h += `<span class="video-tag tag-priority">OFFICIAL VIDEO</span> `;
-                if (uTitle.includes("VIDEO OFFICIAL")) h += `<span class="video-tag tag-priority">VIDEO OFFICIAL</span> `;
-                if (uTitle.includes("VIDEO MUSIC")) h += `<span class="video-tag tag-priority">VIDEO MUSIC</span> `;
-            }
-
-            tagsToFind.forEach(tag => { 
-                if (!h.includes(tag) && uTitle.includes(tag)) {
-                    h += `<span class="video-tag">${tag}</span> `;
-                }
-            });
+            let h = ""; const uTitle = title.toUpperCase();
+            if (uTitle.includes("OFFICIAL MV")) h += `<span class="video-tag tag-priority">OFFICIAL MV</span> `;
+            if (uTitle.includes("VIDEO MUSIC")) h += `<span class="video-tag tag-priority">VIDEO MUSIC</span> `;
+            tagsToFind.forEach(tag => { if (!h.includes(tag) && uTitle.includes(tag)) h += `<span class="video-tag">${tag}</span> `; });
             return h;
         }
 
@@ -297,22 +269,11 @@
                     const bar = document.getElementById('progressBar'); 
                     bar.style.width = per + "%"; 
                     document.getElementById('progressText').innerText = per + "%";
-                    
-                    if (per < 50) {
-                        bar.style.backgroundColor = "#2ed573";
-                    } else if (per < 75) {
-                        bar.style.backgroundColor = "#ffff00"; // VÀNG KHÈ
-                    } else {
-                        bar.style.backgroundColor = "#ff0000"; // ĐỎ LỊM
-                    }
+                    if (per < 50) bar.style.backgroundColor = "#2ed573";
+                    else if (per < 75) bar.style.backgroundColor = "#ffff00";
+                    else bar.style.backgroundColor = "#ff0000";
                 }
             }, 1000);
-        }
-
-        function handleDownload() {
-            if(confirm("❓ BẠN CÓ MUỐN RỜI TRANG WEB NÀY ĐỂ TẢI MP3?")) {
-                window.open(`https://www.youtubepp.com/watch?v=${currentVidId}`, '_blank');
-            }
         }
 
         function onStateChange(e) { if (e.data == YT.PlayerState.PLAYING) updateProgress(); else clearInterval(progressInterval); }
